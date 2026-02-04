@@ -7,6 +7,7 @@ const App = (function() {
     const STATS_KEY = 'pomodoro_stats';
     const TASKS_KEY = 'pomodoro_tasks';
     const ACTIVE_TASK_KEY = 'pomodoro_active_task';
+    const HISTORY_KEY = 'pomodoro_history';
 
     let stats = {
         todayPomodoros: 0,
@@ -14,12 +15,17 @@ const App = (function() {
         lastDate: new Date().toDateString()
     };
 
+    let sessionHistory = [];
+
     // DOM Elements
     const elements = {
         todayPomodoros: document.getElementById('today-pomodoros'),
         todayFocusTime: document.getElementById('today-focus-time'),
         activeTaskDisplay: document.getElementById('active-task-display'),
-        activeTaskText: document.getElementById('active-task-text')
+        activeTaskText: document.getElementById('active-task-text'),
+        toggleHistory: document.getElementById('toggle-history'),
+        sessionHistory: document.getElementById('session-history'),
+        historyList: document.getElementById('history-list')
     };
 
     /**
@@ -27,6 +33,7 @@ const App = (function() {
      */
     function init() {
         loadStats();
+        loadHistory();
         checkDateReset();
 
         // Initialize modules
@@ -47,9 +54,13 @@ const App = (function() {
         Tasks.setOnTasksChange(saveTasks);
         Tasks.setOnActiveTaskChange(handleActiveTaskChange);
 
+        // Bind history toggle
+        elements.toggleHistory.addEventListener('click', toggleHistoryDisplay);
+
         // Update displays
         updateStatsDisplay();
         updateActiveTaskDisplay(Tasks.getActiveTask());
+        renderHistory();
 
         console.log('Pomodoro App initialized');
     }
@@ -77,6 +88,98 @@ const App = (function() {
         } catch (e) {
             console.error('Failed to save stats:', e);
         }
+    }
+
+    /**
+     * Load session history from localStorage
+     */
+    function loadHistory() {
+        try {
+            const saved = localStorage.getItem(HISTORY_KEY);
+            if (saved) {
+                sessionHistory = JSON.parse(saved);
+            }
+        } catch (e) {
+            console.error('Failed to load history:', e);
+            sessionHistory = [];
+        }
+    }
+
+    /**
+     * Save session history to localStorage
+     */
+    function saveHistory() {
+        try {
+            // Keep only last 50 sessions to avoid localStorage bloat
+            if (sessionHistory.length > 50) {
+                sessionHistory = sessionHistory.slice(-50);
+            }
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(sessionHistory));
+        } catch (e) {
+            console.error('Failed to save history:', e);
+        }
+    }
+
+    /**
+     * Add a session to history
+     */
+    function addHistoryEntry(duration, taskName) {
+        const entry = {
+            timestamp: new Date().toISOString(),
+            duration: duration,
+            task: taskName || null
+        };
+        sessionHistory.push(entry);
+        saveHistory();
+        renderHistory();
+    }
+
+    /**
+     * Render session history
+     */
+    function renderHistory() {
+        if (!elements.historyList) return;
+
+        if (sessionHistory.length === 0) {
+            elements.historyList.innerHTML = '<li class="history-empty">No sessions yet</li>';
+            return;
+        }
+
+        // Show most recent first
+        const recentHistory = [...sessionHistory].reverse().slice(0, 20);
+
+        elements.historyList.innerHTML = recentHistory.map(entry => {
+            const date = new Date(entry.timestamp);
+            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            const taskStr = entry.task ? `<span class="history-task">${escapeHtml(entry.task)}</span>` : '';
+
+            return `
+                <li class="history-item">
+                    <span class="history-time">${dateStr} ${timeStr}</span>
+                    ${taskStr}
+                    <span class="history-duration">${entry.duration}m</span>
+                </li>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Toggle history display
+     */
+    function toggleHistoryDisplay() {
+        const isHidden = elements.sessionHistory.classList.contains('hidden');
+        elements.sessionHistory.classList.toggle('hidden');
+        elements.toggleHistory.textContent = isHidden ? 'Hide Session History' : 'View Session History';
+    }
+
+    /**
+     * Escape HTML for safe display
+     */
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     /**
@@ -180,17 +283,25 @@ const App = (function() {
      */
     function handleTimerEnd(sessionType) {
         if (sessionType === 'work') {
+            const workDuration = Settings.get().workDuration;
+
             // Update stats
             stats.todayPomodoros++;
-            stats.todayFocusTime += Settings.get().workDuration;
+            stats.todayFocusTime += workDuration;
             saveStats();
             updateStatsDisplay();
 
+            // Get active task info before incrementing
+            const activeTask = Tasks.getActiveTask();
+            const taskName = activeTask ? activeTask.text : null;
+
             // Increment active task pomodoro count
-            const activeTaskId = Tasks.getActiveTaskId();
-            if (activeTaskId) {
-                Tasks.incrementTaskPomodoro(activeTaskId);
+            if (activeTask) {
+                Tasks.incrementTaskPomodoro(activeTask.id);
             }
+
+            // Add to session history
+            addHistoryEntry(workDuration, taskName);
         }
 
         // Play sound notification

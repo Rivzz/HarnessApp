@@ -439,6 +439,65 @@ body {
     letter-spacing: 0.5px;
 }
 
+.history-toggle {
+    display: block;
+    width: 100%;
+    margin-top: var(--spacing-md);
+    text-align: center;
+}
+
+.session-history {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+}
+
+.history-list {
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-time {
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+}
+
+.history-task {
+    flex: 1;
+    margin-left: var(--spacing-sm);
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.history-duration {
+    color: var(--color-primary);
+    font-weight: 500;
+    margin-left: var(--spacing-sm);
+}
+
+.history-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    padding: var(--spacing-md);
+}
+
 /* Modal */
 .modal {
     position: fixed;

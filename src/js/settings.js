@@ -188,6 +188,7 @@ const Settings = (function() {
         localStorage.removeItem('pomodoro_tasks');
         localStorage.removeItem('pomodoro_timer_state');
         localStorage.removeItem('pomodoro_active_task');
+        localStorage.removeItem('pomodoro_history');
 
         // Reload the page to reset everything
         window.location.reload();
