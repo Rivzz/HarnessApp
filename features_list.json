@@ -93,7 +93,7 @@
     "feature_name": "task_pomodoro_estimation",
     "goal": "Allow users to estimate pomodoros needed per task, track actual vs estimated",
     "priority": "low",
-    "state": "standby"
+    "state": "completed"
   },
   {
     "feature_name": "task_reordering",

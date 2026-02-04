@@ -12,6 +12,7 @@ const Tasks = (function() {
     // DOM Elements
     const elements = {
         taskInput: document.getElementById('task-input'),
+        taskEstimate: document.getElementById('task-estimate'),
         addTaskBtn: document.getElementById('add-task-btn'),
         taskList: document.getElementById('task-list')
     };
@@ -51,15 +52,20 @@ const Tasks = (function() {
         const text = elements.taskInput.value.trim();
         if (!text) return;
 
+        const estimatedPomodoros = parseInt(elements.taskEstimate.value) || 1;
+
         const task = {
             id: Date.now().toString(),
             text: text,
             completed: false,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            estimatedPomodoros: Math.max(1, Math.min(10, estimatedPomodoros)),
+            actualPomodoros: 0
         };
 
         tasks.push(task);
         elements.taskInput.value = '';
+        elements.taskEstimate.value = '1';
         render();
         notifyChange();
     }
@@ -146,11 +152,17 @@ const Tasks = (function() {
             const li = document.createElement('li');
             const isActive = task.id === activeTaskId;
             li.className = `task-item${task.completed ? ' completed' : ''}${isActive ? ' active' : ''}`;
+
+            const estimated = task.estimatedPomodoros || 1;
+            const actual = task.actualPomodoros || 0;
+            const pomodoroClass = actual >= estimated ? 'complete' : '';
+
             li.innerHTML = `
                 <input type="checkbox"
                        ${task.completed ? 'checked' : ''}
                        aria-label="Mark ${task.text} as ${task.completed ? 'incomplete' : 'complete'}">
                 <span class="task-text">${escapeHtml(task.text)}</span>
+                <span class="task-pomodoros ${pomodoroClass}">${actual}/${estimated} 🍅</span>
                 <button class="icon-btn delete-btn" aria-label="Delete task">&times;</button>
             `;
 
@@ -224,6 +236,20 @@ const Tasks = (function() {
     }
 
     /**
+     * Increment actual pomodoros for a task
+     */
+    function incrementTaskPomodoro(taskId) {
+        const task = tasks.find(t => t.id === taskId);
+        if (task && !task.completed) {
+            task.actualPomodoros = (task.actualPomodoros || 0) + 1;
+            render();
+            notifyChange();
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Clear all completed tasks
      */
     function clearCompleted() {
@@ -242,6 +268,7 @@ const Tasks = (function() {
         setOnActiveTaskChange,
         setActiveTask,
         getActiveTask,
-        getActiveTaskId
+        getActiveTaskId,
+        incrementTaskPomodoro
     };
 })();

@@ -185,6 +185,12 @@ const App = (function() {
             stats.todayFocusTime += Settings.get().workDuration;
             saveStats();
             updateStatsDisplay();
+
+            // Increment active task pomodoro count
+            const activeTaskId = Tasks.getActiveTaskId();
+            if (activeTaskId) {
+                Tasks.incrementTaskPomodoro(activeTaskId);
+            }
         }
 
         // Play sound notification
