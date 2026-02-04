@@ -32,6 +32,7 @@ Keep it simple, but isolated to web development efficiency
 ## Fourth Goal
 
 Scaffold project architecture
+During Scaffolding if feature in features_list.json is satisfied, reflect this in the feature state.
 
 ## Fifth Goal
 

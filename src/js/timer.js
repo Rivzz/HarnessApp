@@ -27,6 +27,7 @@ const Timer = (function() {
         minutes: document.getElementById('minutes'),
         seconds: document.getElementById('seconds'),
         timerCircle: document.getElementById('timer-circle'),
+        progressCircle: document.getElementById('progress-circle'),
         sessionType: document.getElementById('session-type'),
         pomodoroCount: document.getElementById('pomodoro-count'),
         startBtn: document.getElementById('start-btn'),
@@ -35,6 +36,9 @@ const Timer = (function() {
         skipSection: document.getElementById('skip-section'),
         skipBtn: document.getElementById('skip-btn')
     };
+
+    // Progress ring constants
+    const CIRCUMFERENCE = 2 * Math.PI * 115; // 722.566 for r=115
 
     // Event callbacks
     let onTimerEnd = null;
@@ -48,8 +52,17 @@ const Timer = (function() {
             settings = { ...settings, ...timerSettings };
         }
         state.timeRemaining = settings.workDuration * 60;
+        initProgressRing();
         updateDisplay();
         bindEvents();
+    }
+
+    /**
+     * Initialize progress ring
+     */
+    function initProgressRing() {
+        elements.progressCircle.style.strokeDasharray = CIRCUMFERENCE;
+        elements.progressCircle.style.strokeDashoffset = 0;
     }
 
     /**
@@ -246,6 +259,32 @@ const Timer = (function() {
 
         elements.minutes.textContent = minutes.toString().padStart(2, '0');
         elements.seconds.textContent = seconds.toString().padStart(2, '0');
+
+        updateProgressRing();
+    }
+
+    /**
+     * Update the progress ring
+     */
+    function updateProgressRing() {
+        const totalDuration = getTotalDuration();
+        const elapsed = totalDuration - state.timeRemaining;
+        const progress = elapsed / totalDuration;
+        const offset = CIRCUMFERENCE * (1 - progress);
+        elements.progressCircle.style.strokeDashoffset = offset;
+    }
+
+    /**
+     * Get total duration for current session type
+     */
+    function getTotalDuration() {
+        if (state.sessionType === 'work') {
+            return settings.workDuration * 60;
+        } else if (state.sessionType === 'shortBreak') {
+            return settings.shortBreakDuration * 60;
+        } else {
+            return settings.longBreakDuration * 60;
+        }
     }
 
     /**
