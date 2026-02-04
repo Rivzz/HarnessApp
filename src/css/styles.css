@@ -438,6 +438,28 @@ body.focus-mode .exit-focus-btn {
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) 0;
     border-bottom: 1px solid var(--color-border);
+    transition: background-color var(--transition-fast);
+}
+
+.task-item.dragging {
+    opacity: 0.5;
+    background: var(--color-border);
+}
+
+.task-item.drag-over {
+    border-top: 2px solid var(--color-primary);
+}
+
+.drag-handle {
+    cursor: grab;
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    padding: 0 var(--spacing-xs);
+    user-select: none;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
 }
 
 .task-item:last-child {

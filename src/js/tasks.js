@@ -8,6 +8,7 @@ const Tasks = (function() {
     let activeTaskId = null;
     let onTasksChange = null;
     let onActiveTaskChange = null;
+    let draggedTaskId = null;
 
     // DOM Elements
     const elements = {
@@ -152,12 +153,15 @@ const Tasks = (function() {
             const li = document.createElement('li');
             const isActive = task.id === activeTaskId;
             li.className = `task-item${task.completed ? ' completed' : ''}${isActive ? ' active' : ''}`;
+            li.draggable = !task.completed;
+            li.dataset.taskId = task.id;
 
             const estimated = task.estimatedPomodoros || 1;
             const actual = task.actualPomodoros || 0;
             const pomodoroClass = actual >= estimated ? 'complete' : '';
 
             li.innerHTML = `
+                ${!task.completed ? '<span class="drag-handle">⋮⋮</span>' : ''}
                 <input type="checkbox"
                        ${task.completed ? 'checked' : ''}
                        aria-label="Mark ${task.text} as ${task.completed ? 'incomplete' : 'complete'}">
@@ -183,6 +187,13 @@ const Tasks = (function() {
                     e.stopPropagation();
                     setActiveTask(isActive ? null : task.id);
                 });
+
+                // Drag and drop events
+                li.addEventListener('dragstart', handleDragStart);
+                li.addEventListener('dragend', handleDragEnd);
+                li.addEventListener('dragover', handleDragOver);
+                li.addEventListener('drop', handleDrop);
+                li.addEventListener('dragleave', handleDragLeave);
             }
 
             elements.taskList.appendChild(li);
@@ -196,6 +207,81 @@ const Tasks = (function() {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    /**
+     * Handle drag start
+     */
+    function handleDragStart(e) {
+        draggedTaskId = e.currentTarget.dataset.taskId;
+        e.currentTarget.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    }
+
+    /**
+     * Handle drag end
+     */
+    function handleDragEnd(e) {
+        e.currentTarget.classList.remove('dragging');
+        draggedTaskId = null;
+
+        // Remove all drag-over classes
+        document.querySelectorAll('.task-item.drag-over').forEach(item => {
+            item.classList.remove('drag-over');
+        });
+    }
+
+    /**
+     * Handle drag over
+     */
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+
+        const targetId = e.currentTarget.dataset.taskId;
+        if (targetId !== draggedTaskId) {
+            e.currentTarget.classList.add('drag-over');
+        }
+    }
+
+    /**
+     * Handle drag leave
+     */
+    function handleDragLeave(e) {
+        e.currentTarget.classList.remove('drag-over');
+    }
+
+    /**
+     * Handle drop
+     */
+    function handleDrop(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+
+        const targetId = e.currentTarget.dataset.taskId;
+        if (draggedTaskId && targetId && draggedTaskId !== targetId) {
+            reorderTasks(draggedTaskId, targetId);
+        }
+    }
+
+    /**
+     * Reorder tasks
+     */
+    function reorderTasks(draggedId, targetId) {
+        const draggedIndex = tasks.findIndex(t => t.id === draggedId);
+        const targetIndex = tasks.findIndex(t => t.id === targetId);
+
+        if (draggedIndex === -1 || targetIndex === -1) return;
+
+        // Remove dragged task
+        const [draggedTask] = tasks.splice(draggedIndex, 1);
+
+        // Insert at new position
+        const newTargetIndex = tasks.findIndex(t => t.id === targetId);
+        tasks.splice(newTargetIndex, 0, draggedTask);
+
+        render();
+        notifyChange();
     }
 
     /**

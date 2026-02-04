@@ -99,7 +99,7 @@
     "feature_name": "task_reordering",
     "goal": "Enable drag-and-drop reordering of tasks in the list",
     "priority": "low",
-    "state": "standby"
+    "state": "completed"
   },
   {
     "feature_name": "active_task_display",
