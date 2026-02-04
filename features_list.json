@@ -195,7 +195,7 @@
     "feature_name": "notification_sounds_selection",
     "goal": "Provide multiple notification sound options for user to choose from",
     "priority": "low",
-    "state": "standby"
+    "state": "completed"
   },
   {
     "feature_name": "distinct_break_work_sounds",

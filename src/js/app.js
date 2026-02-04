@@ -483,44 +483,11 @@ const App = (function() {
     }
 
     /**
-     * Play notification sound
-     * Different sounds for work completion vs break completion
+     * Play notification sound using the selected sound style
      */
     function playNotificationSound(sessionType) {
-        try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-            if (sessionType === 'work') {
-                // Work complete: triumphant double beep (higher pitch)
-                playBeep(audioContext, 880, 0, 0.15);
-                playBeep(audioContext, 1100, 0.2, 0.15);
-            } else {
-                // Break complete: gentle single tone (lower pitch)
-                playBeep(audioContext, 440, 0, 0.4);
-            }
-        } catch (e) {
-            console.error('Failed to play sound:', e);
-        }
-    }
-
-    /**
-     * Play a single beep tone
-     */
-    function playBeep(audioContext, frequency, delay, duration) {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-
-        oscillator.frequency.value = frequency;
-        oscillator.type = 'sine';
-        gainNode.gain.value = 0.3;
-
-        const startTime = audioContext.currentTime + delay;
-        oscillator.start(startTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
-        oscillator.stop(startTime + duration);
+        const soundStyle = Settings.getSoundStyle();
+        Settings.playPreviewSound(soundStyle, sessionType);
     }
 
     /**

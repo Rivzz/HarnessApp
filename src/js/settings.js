@@ -12,6 +12,7 @@ const Settings = (function() {
         longBreakDuration: 15,
         pomodorosUntilLongBreak: 4,
         soundEnabled: true,
+        soundStyle: 'classic',
         browserNotifications: false,
         darkMode: false,
         autoStart: false
@@ -30,6 +31,8 @@ const Settings = (function() {
         longBreak: document.getElementById('long-break'),
         pomodorosUntilLong: document.getElementById('pomodoros-until-long'),
         soundEnabled: document.getElementById('sound-enabled'),
+        soundStyle: document.getElementById('sound-style'),
+        previewSound: document.getElementById('preview-sound'),
         browserNotifications: document.getElementById('browser-notifications'),
         darkMode: document.getElementById('dark-mode'),
         autoStart: document.getElementById('auto-start'),
@@ -87,6 +90,7 @@ const Settings = (function() {
         elements.resetSettings.addEventListener('click', resetToDefaults);
         elements.saveSettings.addEventListener('click', saveFromForm);
         elements.resetAllData.addEventListener('click', resetAllData);
+        elements.previewSound.addEventListener('click', previewSoundStyle);
 
         // Keyboard shortcut to open settings
         document.addEventListener('keydown', (e) => {
@@ -133,6 +137,7 @@ const Settings = (function() {
         elements.longBreak.value = settings.longBreakDuration;
         elements.pomodorosUntilLong.value = settings.pomodorosUntilLongBreak;
         elements.soundEnabled.checked = settings.soundEnabled;
+        elements.soundStyle.value = settings.soundStyle || 'classic';
         elements.browserNotifications.checked = settings.browserNotifications;
         elements.darkMode.checked = settings.darkMode;
         elements.autoStart.checked = settings.autoStart;
@@ -147,6 +152,7 @@ const Settings = (function() {
         settings.longBreakDuration = parseInt(elements.longBreak.value) || defaults.longBreakDuration;
         settings.pomodorosUntilLongBreak = parseInt(elements.pomodorosUntilLong.value) || defaults.pomodorosUntilLongBreak;
         settings.soundEnabled = elements.soundEnabled.checked;
+        settings.soundStyle = elements.soundStyle.value;
         settings.browserNotifications = elements.browserNotifications.checked;
         settings.darkMode = elements.darkMode.checked;
         settings.autoStart = elements.autoStart.checked;
@@ -240,6 +246,82 @@ const Settings = (function() {
         return settings.autoStart;
     }
 
+    /**
+     * Get current sound style
+     */
+    function getSoundStyle() {
+        return settings.soundStyle || 'classic';
+    }
+
+    /**
+     * Preview the currently selected sound style
+     */
+    function previewSoundStyle() {
+        const style = elements.soundStyle.value;
+        playPreviewSound(style, 'work');
+    }
+
+    /**
+     * Play a preview sound for a given style
+     */
+    function playPreviewSound(style, sessionType) {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            switch (style) {
+                case 'bell':
+                    // Bell: higher frequencies with decay
+                    playTone(audioContext, 830, 0, 0.3, 'sine');
+                    playTone(audioContext, 1245, 0.05, 0.25, 'sine');
+                    break;
+                case 'chime':
+                    // Chime: musical notes
+                    playTone(audioContext, 523, 0, 0.2, 'sine'); // C
+                    playTone(audioContext, 659, 0.15, 0.2, 'sine'); // E
+                    playTone(audioContext, 784, 0.3, 0.3, 'sine'); // G
+                    break;
+                case 'digital':
+                    // Digital: square wave blips
+                    playTone(audioContext, 1000, 0, 0.1, 'square');
+                    playTone(audioContext, 1200, 0.12, 0.1, 'square');
+                    playTone(audioContext, 1000, 0.24, 0.1, 'square');
+                    break;
+                case 'classic':
+                default:
+                    // Classic: simple beeps
+                    if (sessionType === 'work') {
+                        playTone(audioContext, 880, 0, 0.15, 'sine');
+                        playTone(audioContext, 1100, 0.2, 0.15, 'sine');
+                    } else {
+                        playTone(audioContext, 440, 0, 0.4, 'sine');
+                    }
+                    break;
+            }
+        } catch (e) {
+            console.error('Failed to play sound:', e);
+        }
+    }
+
+    /**
+     * Play a single tone
+     */
+    function playTone(audioContext, frequency, delay, duration, type) {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = frequency;
+        oscillator.type = type || 'sine';
+        gainNode.gain.value = 0.2;
+
+        const startTime = audioContext.currentTime + delay;
+        oscillator.start(startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+        oscillator.stop(startTime + duration);
+    }
+
     // Public API
     return {
         init,
@@ -247,6 +329,8 @@ const Settings = (function() {
         setOnSettingsChange,
         isSoundEnabled,
         areBrowserNotificationsEnabled,
-        isAutoStartEnabled
+        isAutoStartEnabled,
+        getSoundStyle,
+        playPreviewSound
     };
 })();
