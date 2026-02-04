@@ -28,7 +28,9 @@ const App = (function() {
         activeTaskText: document.getElementById('active-task-text'),
         toggleHistory: document.getElementById('toggle-history'),
         sessionHistory: document.getElementById('session-history'),
-        historyList: document.getElementById('history-list')
+        historyList: document.getElementById('history-list'),
+        focusModeBtn: document.getElementById('focus-mode-btn'),
+        exitFocusBtn: document.getElementById('exit-focus-btn')
     };
 
     /**
@@ -59,6 +61,30 @@ const App = (function() {
 
         // Bind history toggle
         elements.toggleHistory.addEventListener('click', toggleHistoryDisplay);
+
+        // Bind focus mode
+        elements.focusModeBtn.addEventListener('click', enterFocusMode);
+        elements.exitFocusBtn.addEventListener('click', exitFocusMode);
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Escape' && document.body.classList.contains('focus-mode')) {
+                exitFocusMode();
+            }
+            if (e.code === 'KeyF' && !e.ctrlKey && !e.metaKey && e.target.tagName !== 'INPUT') {
+                e.preventDefault();
+                if (document.body.classList.contains('focus-mode')) {
+                    exitFocusMode();
+                } else {
+                    enterFocusMode();
+                }
+            }
+        });
+
+        // Sync focus mode state with fullscreen changes
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && document.body.classList.contains('focus-mode')) {
+                document.body.classList.remove('focus-mode');
+            }
+        });
 
         // Update displays
         updateStatsDisplay();
@@ -174,6 +200,32 @@ const App = (function() {
         const isHidden = elements.sessionHistory.classList.contains('hidden');
         elements.sessionHistory.classList.toggle('hidden');
         elements.toggleHistory.textContent = isHidden ? 'Hide Session History' : 'View Session History';
+    }
+
+    /**
+     * Enter focus mode
+     */
+    function enterFocusMode() {
+        document.body.classList.add('focus-mode');
+
+        // Try to enter fullscreen
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(() => {
+                // Fullscreen not supported or denied, still use CSS focus mode
+            });
+        }
+    }
+
+    /**
+     * Exit focus mode
+     */
+    function exitFocusMode() {
+        document.body.classList.remove('focus-mode');
+
+        // Exit fullscreen if active
+        if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+        }
     }
 
     /**

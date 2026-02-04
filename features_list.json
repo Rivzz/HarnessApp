@@ -177,7 +177,7 @@
     "feature_name": "fullscreen_focus_mode",
     "goal": "Add fullscreen mode that hides all UI except timer for maximum focus",
     "priority": "low",
-    "state": "standby"
+    "state": "completed"
   },
   {
     "feature_name": "skip_break_option",

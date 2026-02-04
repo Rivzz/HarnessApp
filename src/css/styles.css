@@ -279,6 +279,98 @@ body {
     margin-top: var(--spacing-md);
 }
 
+.focus-mode-section {
+    margin-top: var(--spacing-lg);
+}
+
+/* Focus Mode */
+body.focus-mode {
+    background-color: var(--color-surface);
+}
+
+body.focus-mode .app-container {
+    max-width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+body.focus-mode .app-header,
+body.focus-mode .task-section,
+body.focus-mode .stats-section,
+body.focus-mode .session-indicator,
+body.focus-mode .active-task-display,
+body.focus-mode .skip-section,
+body.focus-mode .focus-mode-section {
+    display: none !important;
+}
+
+body.focus-mode .timer-section {
+    margin: 0;
+}
+
+body.focus-mode .timer-display {
+    margin-bottom: var(--spacing-xl);
+}
+
+body.focus-mode .timer-circle {
+    width: 350px;
+    height: 350px;
+}
+
+body.focus-mode .progress-ring {
+    width: 350px;
+    height: 350px;
+}
+
+body.focus-mode .progress-ring-bg,
+body.focus-mode .progress-ring-circle {
+    cx: 175;
+    cy: 175;
+    r: 160;
+    stroke-width: 10;
+}
+
+body.focus-mode .progress-ring-circle {
+    stroke-dasharray: 1005.31;
+}
+
+body.focus-mode .timer-text {
+    font-size: 5rem;
+}
+
+body.focus-mode .timer-controls {
+    margin-bottom: var(--spacing-xl);
+}
+
+body.focus-mode .exit-focus-btn {
+    display: block !important;
+}
+
+.exit-focus-btn {
+    display: none;
+    position: fixed;
+    bottom: var(--spacing-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+}
+
+.exit-focus-btn:hover {
+    color: var(--color-text);
+    border-color: var(--color-text-secondary);
+}
+
 /* Task Section */
 .task-section {
     background: var(--color-surface);
