@@ -201,7 +201,7 @@
     "feature_name": "distinct_break_work_sounds",
     "goal": "Use different notification sounds for work end vs break end",
     "priority": "low",
-    "state": "standby"
+    "state": "completed"
   },
   {
     "feature_name": "state_persistence",

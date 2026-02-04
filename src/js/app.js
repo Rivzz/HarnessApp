@@ -189,7 +189,7 @@ const App = (function() {
 
         // Play sound notification
         if (Settings.isSoundEnabled()) {
-            playNotificationSound();
+            playNotificationSound(sessionType);
         }
 
         // Show browser notification
@@ -214,29 +214,43 @@ const App = (function() {
 
     /**
      * Play notification sound
+     * Different sounds for work completion vs break completion
      */
-    function playNotificationSound() {
-        // Create a simple beep using Web Audio API
+    function playNotificationSound(sessionType) {
         try {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
 
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-
-            oscillator.frequency.value = 800;
-            oscillator.type = 'sine';
-            gainNode.gain.value = 0.3;
-
-            oscillator.start();
-
-            // Fade out
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            oscillator.stop(audioContext.currentTime + 0.5);
+            if (sessionType === 'work') {
+                // Work complete: triumphant double beep (higher pitch)
+                playBeep(audioContext, 880, 0, 0.15);
+                playBeep(audioContext, 1100, 0.2, 0.15);
+            } else {
+                // Break complete: gentle single tone (lower pitch)
+                playBeep(audioContext, 440, 0, 0.4);
+            }
         } catch (e) {
             console.error('Failed to play sound:', e);
         }
+    }
+
+    /**
+     * Play a single beep tone
+     */
+    function playBeep(audioContext, frequency, delay, duration) {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = frequency;
+        oscillator.type = 'sine';
+        gainNode.gain.value = 0.3;
+
+        const startTime = audioContext.currentTime + delay;
+        oscillator.start(startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+        oscillator.stop(startTime + duration);
     }
 
     /**
