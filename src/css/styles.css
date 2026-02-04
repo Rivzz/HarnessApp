@@ -537,6 +537,72 @@ body.focus-mode .exit-focus-btn {
     letter-spacing: 0.5px;
 }
 
+.weekly-stats {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border);
+}
+
+.weekly-stats h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text-secondary);
+}
+
+.weekly-chart {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 80px;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+}
+
+.weekly-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.weekly-bar-fill {
+    width: 100%;
+    background: var(--color-primary);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    min-height: 4px;
+    transition: height var(--transition-normal);
+}
+
+.weekly-bar-fill.today {
+    background: var(--color-secondary);
+}
+
+.weekly-bar-label {
+    font-size: 0.625rem;
+    color: var(--color-text-secondary);
+    margin-top: var(--spacing-xs);
+    text-transform: uppercase;
+}
+
+.weekly-bar-count {
+    font-size: 0.625rem;
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+.weekly-total {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.weekly-total span {
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
 .history-toggle {
     display: block;
     width: 100%;

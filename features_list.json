@@ -117,7 +117,7 @@
     "feature_name": "weekly_stats",
     "goal": "Track and display pomodoros completed this week with daily breakdown",
     "priority": "low",
-    "state": "standby"
+    "state": "completed"
   },
   {
     "feature_name": "session_history",

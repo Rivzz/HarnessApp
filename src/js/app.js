@@ -30,7 +30,9 @@ const App = (function() {
         sessionHistory: document.getElementById('session-history'),
         historyList: document.getElementById('history-list'),
         focusModeBtn: document.getElementById('focus-mode-btn'),
-        exitFocusBtn: document.getElementById('exit-focus-btn')
+        exitFocusBtn: document.getElementById('exit-focus-btn'),
+        weeklyChart: document.getElementById('weekly-chart'),
+        weeklyTotalPomodoros: document.getElementById('weekly-total-pomodoros')
     };
 
     /**
@@ -90,6 +92,7 @@ const App = (function() {
         updateStatsDisplay();
         updateActiveTaskDisplay(Tasks.getActiveTask());
         renderHistory();
+        renderWeeklyStats();
 
         console.log('Pomodoro App initialized');
     }
@@ -161,6 +164,54 @@ const App = (function() {
         sessionHistory.push(entry);
         saveHistory();
         renderHistory();
+        renderWeeklyStats();
+    }
+
+    /**
+     * Calculate and render weekly stats
+     */
+    function renderWeeklyStats() {
+        if (!elements.weeklyChart) return;
+
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 = Sunday
+        const weekStart = new Date(today);
+        weekStart.setDate(today.getDate() - dayOfWeek);
+        weekStart.setHours(0, 0, 0, 0);
+
+        // Initialize daily counts
+        const dailyCounts = [0, 0, 0, 0, 0, 0, 0]; // Sun-Sat
+        const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+        // Count pomodoros from history for this week
+        sessionHistory.forEach(entry => {
+            const entryDate = new Date(entry.timestamp);
+            if (entryDate >= weekStart) {
+                const dayIndex = entryDate.getDay();
+                dailyCounts[dayIndex]++;
+            }
+        });
+
+        // Find max for scaling
+        const maxCount = Math.max(...dailyCounts, 1);
+
+        // Render bars
+        const todayIndex = today.getDay();
+        elements.weeklyChart.innerHTML = dailyCounts.map((count, index) => {
+            const height = (count / maxCount) * 60; // max 60px height
+            const isToday = index === todayIndex;
+            return `
+                <div class="weekly-bar">
+                    <div class="weekly-bar-fill${isToday ? ' today' : ''}" style="height: ${height}px"></div>
+                    <span class="weekly-bar-count">${count || ''}</span>
+                    <span class="weekly-bar-label">${dayLabels[index]}</span>
+                </div>
+            `;
+        }).join('');
+
+        // Update total
+        const weeklyTotal = dailyCounts.reduce((sum, count) => sum + count, 0);
+        elements.weeklyTotalPomodoros.textContent = weeklyTotal;
     }
 
     /**
