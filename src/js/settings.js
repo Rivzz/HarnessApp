@@ -13,7 +13,8 @@ const Settings = (function() {
         pomodorosUntilLongBreak: 4,
         soundEnabled: true,
         browserNotifications: false,
-        darkMode: false
+        darkMode: false,
+        autoStart: false
     };
 
     let settings = { ...defaults };
@@ -31,6 +32,7 @@ const Settings = (function() {
         soundEnabled: document.getElementById('sound-enabled'),
         browserNotifications: document.getElementById('browser-notifications'),
         darkMode: document.getElementById('dark-mode'),
+        autoStart: document.getElementById('auto-start'),
         resetSettings: document.getElementById('reset-settings'),
         saveSettings: document.getElementById('save-settings')
     };
@@ -131,6 +133,7 @@ const Settings = (function() {
         elements.soundEnabled.checked = settings.soundEnabled;
         elements.browserNotifications.checked = settings.browserNotifications;
         elements.darkMode.checked = settings.darkMode;
+        elements.autoStart.checked = settings.autoStart;
     }
 
     /**
@@ -144,6 +147,7 @@ const Settings = (function() {
         settings.soundEnabled = elements.soundEnabled.checked;
         settings.browserNotifications = elements.browserNotifications.checked;
         settings.darkMode = elements.darkMode.checked;
+        settings.autoStart = elements.autoStart.checked;
 
         // Clamp values
         settings.workDuration = Math.max(1, Math.min(60, settings.workDuration));
@@ -207,12 +211,20 @@ const Settings = (function() {
         return settings.browserNotifications;
     }
 
+    /**
+     * Check if auto-start is enabled
+     */
+    function isAutoStartEnabled() {
+        return settings.autoStart;
+    }
+
     // Public API
     return {
         init,
         get,
         setOnSettingsChange,
         isSoundEnabled,
-        areBrowserNotificationsEnabled
+        areBrowserNotificationsEnabled,
+        isAutoStartEnabled
     };
 })();

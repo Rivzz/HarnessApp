@@ -189,7 +189,7 @@
     "feature_name": "auto_start_setting",
     "goal": "Add option to auto-start next session after break ends",
     "priority": "low",
-    "state": "standby"
+    "state": "completed"
   },
   {
     "feature_name": "notification_sounds_selection",

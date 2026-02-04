@@ -196,6 +196,13 @@ const App = (function() {
         if (Settings.areBrowserNotificationsEnabled()) {
             showBrowserNotification(sessionType);
         }
+
+        // Auto-start next session if enabled
+        if (Settings.isAutoStartEnabled()) {
+            setTimeout(() => {
+                Timer.start();
+            }, 1000); // 1 second delay before auto-starting
+        }
     }
 
     /**
