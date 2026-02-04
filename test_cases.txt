@@ -1,0 +1,68 @@
+# Pomodoro Web Application - Test Cases / Feature Ideas
+# Each test case represents a potential feature users would find necessary
+
+## Core Timer Functionality
+1. Timer starts and counts down from default 25 minutes
+2. Timer can be paused mid-session
+3. Timer can be resumed after being paused
+4. Timer can be reset/stopped completely
+5. Timer displays minutes and seconds in MM:SS format
+6. Timer shows visual progress indicator (circular/linear)
+7. Timer automatically transitions to break when work session ends
+8. Timer state persists on page refresh
+
+## Break Management
+9. Short break timer (5 min) starts after work session
+10. Long break timer (15-30 min) triggers after 4 pomodoros
+11. User can skip break if desired
+12. Break countdown displays clearly differentiated from work
+13. User notified when break ends
+14. Auto-start next pomodoro after break (optional setting)
+
+## Customization / Settings
+15. User can customize work session duration (1-60 min)
+16. User can customize short break duration (1-15 min)
+17. User can customize long break duration (5-60 min)
+18. User can set number of pomodoros before long break
+19. Settings persist across browser sessions
+20. User can reset all settings to defaults
+21. Settings accessible via dedicated panel/modal
+
+## Notifications & Audio
+22. Audio notification plays when timer ends
+23. Browser push notification when timer ends
+24. User can enable/disable sound notifications
+25. User can enable/disable browser notifications
+26. User can select from multiple notification sounds
+27. Volume control for notification sounds
+28. Different sounds for work end vs break end
+
+## Task Management
+29. User can add tasks to work on during pomodoros
+30. User can mark tasks as complete
+31. User can delete tasks
+32. User can edit task names
+33. Tasks can have estimated pomodoro count
+34. User can reorder tasks via drag-and-drop
+35. Current active task displays during pomodoro
+36. Completed tasks tracked with actual pomodoros used
+
+## Statistics & Tracking
+37. Display total pomodoros completed today
+38. Display total pomodoros completed this week
+39. Track total focus time per day
+40. Show streak of consecutive productive days
+41. History log of completed sessions with timestamps
+42. Visual charts/graphs of productivity trends
+
+## User Interface & Experience
+43. Responsive design adapts to mobile/tablet/desktop
+44. Dark mode theme option
+45. Light mode theme option
+46. Clean, minimalist, distraction-free interface
+47. Keyboard shortcuts (space=start/pause, r=reset)
+48. Timer countdown visible in browser tab title
+49. Full-screen focus mode hides distractions
+
+## Accessibility
+50. Screen reader compatible with ARIA labels

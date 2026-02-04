@@ -1,0 +1,42 @@
+Instructions for creation of a pomodoro web application are detailed below:
+
+Goals below MUST be followed in order of listing (top-down)
+When goals are accomplished proceed to COMPLETION 
+
+## First Goal
+
+Brainstorm up to 50 test cases for features
+A test case -> possible feature for the web application
+A test case -> simple goal, specific, can cover multiple aspects of a feature at once
+A test case -> ONLY choose features that a user would find necessary in this application
+
+Store test cases and then proceed to Second Goal
+
+## Second Goal
+
+Generation of a features_list.json will take place
+features_list.json will follow this format in json architecture:
+
+each object -> has keys {feature_name, goal, priority, state}
+
+feature_name = reference id for feature addition task
+goal = instructions for you (the ai) to define additions
+priority = set a priority (low, medium, high), order at which task will be completed
+state = set a state (standby, in-progress, completed)
+
+## Third Goal
+
+Generate a init.sh with skills required for assembling feature_list.json
+Keep it simple, but isolated to web development efficiency
+
+## Fourth Goal
+
+Scaffold project architecture
+
+## Fifth Goal
+
+Initialize the git repository
+
+## COMPLETION
+
+Provide session handoff notes to the next agent in a file claude-progress.txt

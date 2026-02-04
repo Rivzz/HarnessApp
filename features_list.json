@@ -1,0 +1,230 @@
+[
+  {
+    "feature_name": "core_timer_countdown",
+    "goal": "Implement main timer that counts down from configurable duration (default 25 min), displays MM:SS format, updates every second",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "timer_controls",
+    "goal": "Add start, pause, resume, and reset controls for the timer with clear button states",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "visual_progress_indicator",
+    "goal": "Display circular or linear progress bar showing elapsed/remaining time visually",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "break_timer_short",
+    "goal": "Implement 5-minute short break timer that triggers after work session completion",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "break_timer_long",
+    "goal": "Implement 15-30 minute long break timer that triggers after 4 completed pomodoros",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "session_auto_transition",
+    "goal": "Automatically transition between work and break sessions with user notification",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "pomodoro_counter",
+    "goal": "Track and display number of completed pomodoros in current cycle (1-4)",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "audio_notifications",
+    "goal": "Play audio sound when timer ends, support enable/disable toggle and volume control",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "browser_notifications",
+    "goal": "Send browser push notifications when timer ends, with permission request and toggle",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "settings_panel",
+    "goal": "Create settings modal/panel for configuring all timer durations and preferences",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "custom_work_duration",
+    "goal": "Allow user to set work session duration between 1-60 minutes",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "custom_break_durations",
+    "goal": "Allow user to set short break (1-15 min) and long break (5-60 min) durations",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "custom_pomodoro_cycle",
+    "goal": "Allow user to configure number of pomodoros before long break (default 4)",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "settings_persistence",
+    "goal": "Save user settings to localStorage, restore on page load, add reset to defaults option",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "task_list_basic",
+    "goal": "Implement task list with add, edit, delete, and mark complete functionality",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "task_pomodoro_estimation",
+    "goal": "Allow users to estimate pomodoros needed per task, track actual vs estimated",
+    "priority": "low",
+    "state": "standby"
+  },
+  {
+    "feature_name": "task_reordering",
+    "goal": "Enable drag-and-drop reordering of tasks in the list",
+    "priority": "low",
+    "state": "standby"
+  },
+  {
+    "feature_name": "active_task_display",
+    "goal": "Show currently selected task prominently during active pomodoro session",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "daily_stats",
+    "goal": "Track and display pomodoros completed today and total focus time",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "weekly_stats",
+    "goal": "Track and display pomodoros completed this week with daily breakdown",
+    "priority": "low",
+    "state": "standby"
+  },
+  {
+    "feature_name": "session_history",
+    "goal": "Log completed sessions with timestamps, allow viewing history",
+    "priority": "low",
+    "state": "standby"
+  },
+  {
+    "feature_name": "productivity_streak",
+    "goal": "Track consecutive days with at least one completed pomodoro, display streak count",
+    "priority": "low",
+    "state": "standby"
+  },
+  {
+    "feature_name": "stats_visualization",
+    "goal": "Create simple charts/graphs showing productivity trends over time",
+    "priority": "low",
+    "state": "standby"
+  },
+  {
+    "feature_name": "responsive_design",
+    "goal": "Ensure UI adapts properly to mobile, tablet, and desktop screen sizes",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "dark_mode",
+    "goal": "Implement dark color theme with toggle, remember user preference",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "light_mode",
+    "goal": "Implement light color theme as default option",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "minimalist_ui",
+    "goal": "Design clean, distraction-free interface focused on the timer",
+    "priority": "high",
+    "state": "standby"
+  },
+  {
+    "feature_name": "keyboard_shortcuts",
+    "goal": "Add keyboard shortcuts: space for start/pause, R for reset, S for settings",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "tab_title_timer",
+    "goal": "Display current timer countdown in browser tab title for background visibility",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "fullscreen_focus_mode",
+    "goal": "Add fullscreen mode that hides all UI except timer for maximum focus",
+    "priority": "low",
+    "state": "standby"
+  },
+  {
+    "feature_name": "skip_break_option",
+    "goal": "Allow user to skip current break and start next work session immediately",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "auto_start_setting",
+    "goal": "Add option to auto-start next session after break ends",
+    "priority": "low",
+    "state": "standby"
+  },
+  {
+    "feature_name": "notification_sounds_selection",
+    "goal": "Provide multiple notification sound options for user to choose from",
+    "priority": "low",
+    "state": "standby"
+  },
+  {
+    "feature_name": "distinct_break_work_sounds",
+    "goal": "Use different notification sounds for work end vs break end",
+    "priority": "low",
+    "state": "standby"
+  },
+  {
+    "feature_name": "state_persistence",
+    "goal": "Save timer state to localStorage, restore on page refresh",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "accessibility_aria",
+    "goal": "Add proper ARIA labels and roles for screen reader compatibility",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "keyboard_navigation",
+    "goal": "Ensure all interactive elements are keyboard accessible with visible focus states",
+    "priority": "medium",
+    "state": "standby"
+  },
+  {
+    "feature_name": "reset_all_data",
+    "goal": "Provide option to clear all stored data (stats, tasks, settings)",
+    "priority": "low",
+    "state": "standby"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "name": "pomodoro-app",
+  "version": "1.0.0",
+  "description": "A focused pomodoro timer web application for productivity",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "npx live-server src --port=3000",
+    "dev": "npx live-server src --port=3000 --open=/index.html"
+  },
+  "keywords": [
+    "pomodoro",
+    "timer",
+    "productivity",
+    "focus",
+    "time-management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {}
+}
