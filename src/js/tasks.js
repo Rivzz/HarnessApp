@@ -5,7 +5,9 @@
 
 const Tasks = (function() {
     let tasks = [];
+    let activeTaskId = null;
     let onTasksChange = null;
+    let onActiveTaskChange = null;
 
     // DOM Elements
     const elements = {
@@ -17,9 +19,14 @@ const Tasks = (function() {
     /**
      * Initialize tasks module
      */
-    function init(savedTasks) {
+    function init(savedTasks, savedActiveTaskId) {
         if (savedTasks && Array.isArray(savedTasks)) {
             tasks = savedTasks;
+        }
+        if (savedActiveTaskId) {
+            // Verify the task still exists
+            const taskExists = tasks.some(t => t.id === savedActiveTaskId && !t.completed);
+            activeTaskId = taskExists ? savedActiveTaskId : null;
         }
         bindEvents();
         render();
@@ -66,6 +73,10 @@ const Tasks = (function() {
             task.completed = !task.completed;
             if (task.completed) {
                 task.completedAt = new Date().toISOString();
+                // Clear active task if it was completed
+                if (activeTaskId === id) {
+                    setActiveTask(null);
+                }
             } else {
                 delete task.completedAt;
             }
@@ -78,9 +89,40 @@ const Tasks = (function() {
      * Delete a task
      */
     function deleteTask(id) {
+        // Clear active task if it was deleted
+        if (activeTaskId === id) {
+            setActiveTask(null);
+        }
         tasks = tasks.filter(t => t.id !== id);
         render();
         notifyChange();
+    }
+
+    /**
+     * Set active task
+     */
+    function setActiveTask(id) {
+        activeTaskId = id;
+        render();
+        if (onActiveTaskChange) {
+            const activeTask = id ? tasks.find(t => t.id === id) : null;
+            onActiveTaskChange(activeTask);
+        }
+    }
+
+    /**
+     * Get active task
+     */
+    function getActiveTask() {
+        if (!activeTaskId) return null;
+        return tasks.find(t => t.id === activeTaskId) || null;
+    }
+
+    /**
+     * Get active task ID
+     */
+    function getActiveTaskId() {
+        return activeTaskId;
     }
 
     /**
@@ -102,7 +144,8 @@ const Tasks = (function() {
 
         sortedTasks.forEach(task => {
             const li = document.createElement('li');
-            li.className = `task-item${task.completed ? ' completed' : ''}`;
+            const isActive = task.id === activeTaskId;
+            li.className = `task-item${task.completed ? ' completed' : ''}${isActive ? ' active' : ''}`;
             li.innerHTML = `
                 <input type="checkbox"
                        ${task.completed ? 'checked' : ''}
@@ -115,7 +158,20 @@ const Tasks = (function() {
             checkbox.addEventListener('change', () => toggleTask(task.id));
 
             const deleteBtn = li.querySelector('.delete-btn');
-            deleteBtn.addEventListener('click', () => deleteTask(task.id));
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteTask(task.id);
+            });
+
+            // Click on task text to set as active (only for incomplete tasks)
+            const taskText = li.querySelector('.task-text');
+            if (!task.completed) {
+                taskText.style.cursor = 'pointer';
+                taskText.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    setActiveTask(isActive ? null : task.id);
+                });
+            }
 
             elements.taskList.appendChild(li);
         });
@@ -147,6 +203,13 @@ const Tasks = (function() {
     }
 
     /**
+     * Set callback for active task changes
+     */
+    function setOnActiveTaskChange(callback) {
+        onActiveTaskChange = callback;
+    }
+
+    /**
      * Get all tasks
      */
     function getTasks() {
@@ -175,6 +238,10 @@ const Tasks = (function() {
         getTasks,
         getCompletedCount,
         clearCompleted,
-        setOnTasksChange
+        setOnTasksChange,
+        setOnActiveTaskChange,
+        setActiveTask,
+        getActiveTask,
+        getActiveTaskId
     };
 })();

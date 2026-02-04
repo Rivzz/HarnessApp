@@ -6,6 +6,7 @@
 const App = (function() {
     const STATS_KEY = 'pomodoro_stats';
     const TASKS_KEY = 'pomodoro_tasks';
+    const ACTIVE_TASK_KEY = 'pomodoro_active_task';
 
     let stats = {
         todayPomodoros: 0,
@@ -16,7 +17,9 @@ const App = (function() {
     // DOM Elements
     const elements = {
         todayPomodoros: document.getElementById('today-pomodoros'),
-        todayFocusTime: document.getElementById('today-focus-time')
+        todayFocusTime: document.getElementById('today-focus-time'),
+        activeTaskDisplay: document.getElementById('active-task-display'),
+        activeTaskText: document.getElementById('active-task-text')
     };
 
     /**
@@ -33,16 +36,20 @@ const App = (function() {
         const savedTimerState = Timer.loadState();
         Timer.init(Settings.get(), savedTimerState);
 
-        Tasks.init(loadTasks());
+        // Load saved active task
+        const savedActiveTaskId = loadActiveTaskId();
+        Tasks.init(loadTasks(), savedActiveTaskId);
 
         // Set up callbacks
         Settings.setOnSettingsChange(handleSettingsChange);
         Timer.setOnTimerEnd(handleTimerEnd);
         Timer.setOnTick(handleTick);
         Tasks.setOnTasksChange(saveTasks);
+        Tasks.setOnActiveTaskChange(handleActiveTaskChange);
 
-        // Update display
+        // Update displays
         updateStatsDisplay();
+        updateActiveTaskDisplay(Tasks.getActiveTask());
 
         console.log('Pomodoro App initialized');
     }
@@ -93,6 +100,53 @@ const App = (function() {
             localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
         } catch (e) {
             console.error('Failed to save tasks:', e);
+        }
+    }
+
+    /**
+     * Load active task ID from localStorage
+     */
+    function loadActiveTaskId() {
+        try {
+            return localStorage.getItem(ACTIVE_TASK_KEY);
+        } catch (e) {
+            console.error('Failed to load active task:', e);
+            return null;
+        }
+    }
+
+    /**
+     * Save active task ID to localStorage
+     */
+    function saveActiveTaskId(taskId) {
+        try {
+            if (taskId) {
+                localStorage.setItem(ACTIVE_TASK_KEY, taskId);
+            } else {
+                localStorage.removeItem(ACTIVE_TASK_KEY);
+            }
+        } catch (e) {
+            console.error('Failed to save active task:', e);
+        }
+    }
+
+    /**
+     * Handle active task change
+     */
+    function handleActiveTaskChange(task) {
+        saveActiveTaskId(task ? task.id : null);
+        updateActiveTaskDisplay(task);
+    }
+
+    /**
+     * Update active task display
+     */
+    function updateActiveTaskDisplay(task) {
+        if (task && !task.completed) {
+            elements.activeTaskText.textContent = task.text;
+            elements.activeTaskDisplay.classList.remove('hidden');
+        } else {
+            elements.activeTaskDisplay.classList.add('hidden');
         }
     }
 
