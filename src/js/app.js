@@ -28,7 +28,11 @@ const App = (function() {
 
         // Initialize modules
         Settings.init();
-        Timer.init(Settings.get());
+
+        // Load saved timer state
+        const savedTimerState = Timer.loadState();
+        Timer.init(Settings.get(), savedTimerState);
+
         Tasks.init(loadTasks());
 
         // Set up callbacks

@@ -43,18 +43,108 @@ const Timer = (function() {
     // Event callbacks
     let onTimerEnd = null;
     let onTick = null;
+    let onStateChange = null;
+
+    // LocalStorage key
+    const TIMER_STATE_KEY = 'pomodoro_timer_state';
 
     /**
      * Initialize timer with settings
      */
-    function init(timerSettings) {
+    function init(timerSettings, savedState) {
         if (timerSettings) {
             settings = { ...settings, ...timerSettings };
         }
-        state.timeRemaining = settings.workDuration * 60;
+
+        // Restore saved state or use defaults
+        if (savedState) {
+            restoreState(savedState);
+        } else {
+            state.timeRemaining = settings.workDuration * 60;
+        }
+
         initProgressRing();
         updateDisplay();
+        updateSessionDisplay();
+        updatePomodoroCount();
         bindEvents();
+    }
+
+    /**
+     * Restore state from saved data
+     */
+    function restoreState(savedState) {
+        state.timeRemaining = savedState.timeRemaining || settings.workDuration * 60;
+        state.sessionType = savedState.sessionType || 'work';
+        state.completedPomodoros = savedState.completedPomodoros || 0;
+        state.isPaused = savedState.isPaused || false;
+        // Don't restore isRunning - always start paused after refresh
+    }
+
+    /**
+     * Update session type display
+     */
+    function updateSessionDisplay() {
+        if (state.sessionType === 'work') {
+            elements.sessionType.textContent = 'Focus Time';
+            elements.skipSection.classList.add('hidden');
+            elements.timerCircle.classList.remove('break');
+        } else if (state.sessionType === 'shortBreak') {
+            elements.sessionType.textContent = 'Short Break';
+            elements.skipSection.classList.remove('hidden');
+            elements.timerCircle.classList.add('break');
+        } else {
+            elements.sessionType.textContent = 'Long Break';
+            elements.skipSection.classList.remove('hidden');
+            elements.timerCircle.classList.add('break');
+        }
+    }
+
+    /**
+     * Save current state to localStorage
+     */
+    function saveState() {
+        const stateToSave = {
+            timeRemaining: state.timeRemaining,
+            sessionType: state.sessionType,
+            completedPomodoros: state.completedPomodoros,
+            isPaused: state.isPaused,
+            savedAt: Date.now()
+        };
+
+        try {
+            localStorage.setItem(TIMER_STATE_KEY, JSON.stringify(stateToSave));
+        } catch (e) {
+            console.error('Failed to save timer state:', e);
+        }
+
+        if (onStateChange) {
+            onStateChange(stateToSave);
+        }
+    }
+
+    /**
+     * Load state from localStorage
+     */
+    function loadState() {
+        try {
+            const saved = localStorage.getItem(TIMER_STATE_KEY);
+            return saved ? JSON.parse(saved) : null;
+        } catch (e) {
+            console.error('Failed to load timer state:', e);
+            return null;
+        }
+    }
+
+    /**
+     * Clear saved state
+     */
+    function clearState() {
+        try {
+            localStorage.removeItem(TIMER_STATE_KEY);
+        } catch (e) {
+            console.error('Failed to clear timer state:', e);
+        }
     }
 
     /**
@@ -142,6 +232,7 @@ const Timer = (function() {
         elements.startBtn.disabled = false;
         elements.pauseBtn.disabled = true;
         elements.timerCircle.classList.remove('running');
+        saveState();
     }
 
     /**
@@ -161,6 +252,7 @@ const Timer = (function() {
 
         elements.timerCircle.classList.remove('break');
         updateDisplay();
+        saveState();
     }
 
     /**
@@ -185,6 +277,7 @@ const Timer = (function() {
 
         updateDisplay();
         updateTabTitle();
+        saveState();
 
         if (state.timeRemaining <= 0) {
             handleTimerEnd();
@@ -226,6 +319,7 @@ const Timer = (function() {
         elements.skipSection.classList.add('hidden');
         elements.timerCircle.classList.remove('break');
         updateDisplay();
+        saveState();
     }
 
     /**
@@ -237,6 +331,7 @@ const Timer = (function() {
         elements.sessionType.textContent = 'Short Break';
         elements.skipSection.classList.remove('hidden');
         updateDisplay();
+        saveState();
     }
 
     /**
@@ -248,6 +343,7 @@ const Timer = (function() {
         elements.sessionType.textContent = 'Long Break';
         elements.skipSection.classList.remove('hidden');
         updateDisplay();
+        saveState();
     }
 
     /**
@@ -343,6 +439,13 @@ const Timer = (function() {
         updatePomodoroCount();
     }
 
+    /**
+     * Set callback for state changes
+     */
+    function setOnStateChange(callback) {
+        onStateChange = callback;
+    }
+
     // Public API
     return {
         init,
@@ -354,6 +457,9 @@ const Timer = (function() {
         setOnTimerEnd,
         setOnTick,
         getCompletedPomodoros,
-        setCompletedPomodoros
+        setCompletedPomodoros,
+        loadState,
+        clearState,
+        setOnStateChange
     };
 })();
