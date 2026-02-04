@@ -129,7 +129,7 @@
     "feature_name": "productivity_streak",
     "goal": "Track consecutive days with at least one completed pomodoro, display streak count",
     "priority": "low",
-    "state": "standby"
+    "state": "completed"
   },
   {
     "feature_name": "stats_visualization",

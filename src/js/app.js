@@ -12,7 +12,9 @@ const App = (function() {
     let stats = {
         todayPomodoros: 0,
         todayFocusTime: 0, // in minutes
-        lastDate: new Date().toDateString()
+        lastDate: new Date().toDateString(),
+        streak: 0,
+        lastStreakDate: null
     };
 
     let sessionHistory = [];
@@ -21,6 +23,7 @@ const App = (function() {
     const elements = {
         todayPomodoros: document.getElementById('today-pomodoros'),
         todayFocusTime: document.getElementById('today-focus-time'),
+        streakCount: document.getElementById('streak-count'),
         activeTaskDisplay: document.getElementById('active-task-display'),
         activeTaskText: document.getElementById('active-task-text'),
         toggleHistory: document.getElementById('toggle-history'),
@@ -259,9 +262,52 @@ const App = (function() {
     function checkDateReset() {
         const today = new Date().toDateString();
         if (stats.lastDate !== today) {
+            // Check if streak should be reset (missed a day)
+            const lastDate = stats.lastStreakDate ? new Date(stats.lastStreakDate) : null;
+            const todayDate = new Date(today);
+
+            if (lastDate) {
+                const daysDiff = Math.floor((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+                if (daysDiff > 1) {
+                    // Missed more than one day, reset streak
+                    stats.streak = 0;
+                }
+            }
+
             stats.todayPomodoros = 0;
             stats.todayFocusTime = 0;
             stats.lastDate = today;
+            saveStats();
+        }
+    }
+
+    /**
+     * Update streak when pomodoro is completed
+     */
+    function updateStreak() {
+        const today = new Date().toDateString();
+
+        if (stats.lastStreakDate !== today) {
+            // First pomodoro of the day
+            const lastDate = stats.lastStreakDate ? new Date(stats.lastStreakDate) : null;
+            const todayDate = new Date(today);
+
+            if (lastDate) {
+                const daysDiff = Math.floor((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+                if (daysDiff === 1) {
+                    // Consecutive day
+                    stats.streak++;
+                } else if (daysDiff > 1) {
+                    // Missed days, start new streak
+                    stats.streak = 1;
+                }
+                // daysDiff === 0 means same day, don't increment
+            } else {
+                // First ever pomodoro
+                stats.streak = 1;
+            }
+
+            stats.lastStreakDate = today;
             saveStats();
         }
     }
@@ -288,6 +334,10 @@ const App = (function() {
             // Update stats
             stats.todayPomodoros++;
             stats.todayFocusTime += workDuration;
+
+            // Update streak
+            updateStreak();
+
             saveStats();
             updateStatsDisplay();
 
@@ -401,6 +451,8 @@ const App = (function() {
         } else {
             elements.todayFocusTime.textContent = `${minutes}m`;
         }
+
+        elements.streakCount.textContent = stats.streak || 0;
     }
 
     // Initialize when DOM is ready

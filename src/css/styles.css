@@ -414,8 +414,14 @@ body {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-md);
+}
+
+.streak-card .stat-value::after {
+    content: '🔥';
+    font-size: 1rem;
+    margin-left: 0.25rem;
 }
 
 .stat-card {
