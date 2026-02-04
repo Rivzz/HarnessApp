@@ -225,6 +225,6 @@
     "feature_name": "reset_all_data",
     "goal": "Provide option to clear all stored data (stats, tasks, settings)",
     "priority": "low",
-    "state": "standby"
+    "state": "completed"
   }
 ]

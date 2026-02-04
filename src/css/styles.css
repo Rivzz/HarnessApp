@@ -501,6 +501,21 @@ body {
     border-top: 1px solid var(--color-border);
 }
 
+.danger-zone {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+}
+
+.text-btn.danger {
+    color: #e74c3c;
+}
+
+.text-btn.danger:hover {
+    color: #c0392b;
+}
+
 /* Utility Classes */
 .hidden {
     display: none !important;

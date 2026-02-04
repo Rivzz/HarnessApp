@@ -34,7 +34,8 @@ const Settings = (function() {
         darkMode: document.getElementById('dark-mode'),
         autoStart: document.getElementById('auto-start'),
         resetSettings: document.getElementById('reset-settings'),
-        saveSettings: document.getElementById('save-settings')
+        saveSettings: document.getElementById('save-settings'),
+        resetAllData: document.getElementById('reset-all-data')
     };
 
     /**
@@ -85,6 +86,7 @@ const Settings = (function() {
         });
         elements.resetSettings.addEventListener('click', resetToDefaults);
         elements.saveSettings.addEventListener('click', saveFromForm);
+        elements.resetAllData.addEventListener('click', resetAllData);
 
         // Keyboard shortcut to open settings
         document.addEventListener('keydown', (e) => {
@@ -170,6 +172,25 @@ const Settings = (function() {
     function resetToDefaults() {
         settings = { ...defaults };
         populateForm();
+    }
+
+    /**
+     * Reset all application data
+     */
+    function resetAllData() {
+        if (!confirm('This will delete all your tasks, stats, and settings. Are you sure?')) {
+            return;
+        }
+
+        // Clear all pomodoro-related localStorage keys
+        localStorage.removeItem('pomodoro_settings');
+        localStorage.removeItem('pomodoro_stats');
+        localStorage.removeItem('pomodoro_tasks');
+        localStorage.removeItem('pomodoro_timer_state');
+        localStorage.removeItem('pomodoro_active_task');
+
+        // Reload the page to reset everything
+        window.location.reload();
     }
 
     /**
