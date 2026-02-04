@@ -41,3 +41,9 @@ Initialize the git repository
 ## COMPLETION
 
 Provide session handoff notes to the next agent in a file claude-progress.txt
+
+generate a CLAUDE.MD file. Adopt the current architecture of the project from the latest claude-progress.txt and
+  app_spec.txt. Also add a specific workflow rule that always following this structure Get Bearings (rear
+  claude-progress.txt, read files, git logs) -> Regression test (verify, passing) using subgents generously -> Pick
+  Next Feature -> Increment and test (browser & UI) -> Update and commit -> Log handoff notes for next agent in
+  claude-progress.txt -> Update init.sh for any tasks necessary aligning to the claude-progress.txt

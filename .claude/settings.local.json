@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: add active task display above timer\n\n- Click on any incomplete task text to set it as active\n- Active task shown prominently between session indicator and timer\n- Active task highlighted in task list with subtle background\n- Active task persisted to localStorage\n- Auto-clears when task is completed or deleted\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: add auto-start next session setting\n\n- New checkbox in settings to enable auto-start\n- When enabled, next session starts automatically 1 second after current ends\n- Works for both work-to-break and break-to-work transitions\n- Setting persisted to localStorage\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)"
+    ]
+  }
+}
